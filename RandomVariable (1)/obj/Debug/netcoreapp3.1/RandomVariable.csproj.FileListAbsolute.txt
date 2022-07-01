@@ -1,0 +1,10 @@
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\obj\Debug\netcoreapp3.1\RandomVariable.csproj.AssemblyReference.cache
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\obj\Debug\netcoreapp3.1\RandomVariable.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\obj\Debug\netcoreapp3.1\RandomVariable.AssemblyInfoInputs.cache
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\obj\Debug\netcoreapp3.1\RandomVariable.AssemblyInfo.cs
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\obj\Debug\netcoreapp3.1\RandomVariable.csproj.CoreCompileInputs.cache
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\bin\Debug\netcoreapp3.1\RandomVariable.deps.json
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\bin\Debug\netcoreapp3.1\RandomVariable.dll
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\bin\Debug\netcoreapp3.1\RandomVariable.pdb
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\obj\Debug\netcoreapp3.1\RandomVariable.dll
+C:\Users\user\RiderProjects\TaskMath\RandomVariable (1)\obj\Debug\netcoreapp3.1\RandomVariable.pdb
