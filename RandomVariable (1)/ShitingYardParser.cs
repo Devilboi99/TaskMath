@@ -110,78 +110,33 @@ namespace ShuntingYardParser
                     case TokenType.Operator:
                         while (stackOperations.Any() && stackOperations.Peek().Type == TokenType.Operator &&
                                CompareOperators(tok.Value, stackOperations.Peek().Value))
-                        {
-                            var operation = stackOperations.Pop().Value;
-                            if (operation == "+")
-                            {
-                                var newNum = stackNums.Pop() + stackNums.Pop();
-                                stackNums.Push(newNum);
-                            }
-                            else if(operation == "-")
-                            {
-                                var firstNum = stackNums.Pop();
-                                var newNum = stackNums.Pop() - firstNum;
-                                stackNums.Push(newNum);
-                            }
-                            else if (operation == "*")
-                            {
-                                var newNum = stackNums.Pop() * stackNums.Pop();
-                                stackNums.Push(newNum);
-                            }
-                            else if (operation == "/")
-                            {
-                                var firstNum = stackNums.Pop();
-                                var newNum = stackNums.Pop() / firstNum;
-                                stackNums.Push(newNum);
-                            }
-                            
-                        }
+                            MergeNum(stackOperations, stackNums);
 
                         stackOperations.Push(tok);
                         break;
-                    /*case TokenType.Parenthesis:
-                         if (tok.Value == "(")
-                    stackOperations.Push(tok);
-                else
-                {
-                    while (stackOperations.Peek().Value != "(")
-                        yield return stackOperations.Pop();
-                    stackOperations.Pop();
-                    if (stackOperations.Peek().Type == TokenType.Function)
-                        yield return stackOperations.Pop();
-                }
-                break;
-            default:
-                throw new Exception("Wrong token");*/
+                    case TokenType.Parenthesis:
+                        if (tok.Value == "(")
+                            stackOperations.Push(tok);
+                        else
+                        {
+                            while (stackOperations.Peek().Value != "(")
+                                MergeNum(stackOperations, stackNums);
+                            stackOperations.Pop();
+                            if (stackOperations.Count != 0 && stackOperations.Peek().Type == TokenType.Function)
+                                MergeNum(stackOperations, stackNums);
+                        }
+
+                        break;
+                    default:
+                        throw new Exception("Wrong token");
                 }
             }
 
             var answer = 0.0d;
             while (stackOperations.Count != 0)
-            {
-                var operation = stackOperations.Pop().Value;
-                var mergeNum = 0d;
-                if (operation == "+")
-                    mergeNum = stackNums.Pop() + stackNums.Pop();
-                if (operation == "-")
-                {
-                    var firstNum = stackNums.Pop();
-                    mergeNum = stackNums.Pop() - firstNum;
-                }
-                    
-                if (operation == "*")
-                    mergeNum = stackNums.Pop() * stackNums.Pop();
-                if (operation == "/")
-                {
-                    var firstNum = stackNums.Pop();
-                    mergeNum = stackNums.Pop() / firstNum;
-                }
-                    
-                stackNums.Push(mergeNum);
-                answer = mergeNum;
-            }
+                MergeNum(stackOperations, stackNums);
 
-            return answer;
+            return stackNums.Pop();
             /*while (stackOperations.Any())
             {
                 var tok = stackOperations.Pop();
@@ -190,6 +145,28 @@ namespace ShuntingYardParser
                 yield return tok;
             }*/
             throw new ArgumentException();
+        }
+
+        private static void MergeNum(Stack<Token> stackOperations, Stack<double> stackNums)
+        {
+            var operation = stackOperations.Pop().Value;
+            var mergeNum = 0d;
+            if (operation == "+")
+                mergeNum = stackNums.Pop() + stackNums.Pop();
+            else if (operation == "-")
+            {
+                var firstNum = stackNums.Pop();
+                mergeNum = stackNums.Pop() - firstNum;
+            }
+            else if (operation == "*")
+                mergeNum = stackNums.Pop() * stackNums.Pop();
+            else if (operation == "/")
+            {
+                var firstNum = stackNums.Pop();
+                mergeNum = stackNums.Pop() / firstNum;
+            }
+
+            stackNums.Push(mergeNum);
         }
     }
 
