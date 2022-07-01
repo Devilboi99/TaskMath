@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {}
+    "net6.0": {
+      "RandomVariable/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/RandomVariable.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/RandomVariable.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "RandomVariable/1.0.0": {
+      "type": "project",
+      "path": "../RandomVariable (1)/RandomVariable.csproj",
+      "msbuildProject": "../RandomVariable (1)/RandomVariable.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net6.0": []
+    "net6.0": [
+      "RandomVariable >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\user\\.nuget\\packages\\": {}
@@ -31,7 +50,11 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\user\\RiderProjects\\TaskMath\\RandomVariable (1)\\RandomVariable.csproj": {
+              "projectPath": "C:\\Users\\user\\RiderProjects\\TaskMath\\RandomVariable (1)\\RandomVariable.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

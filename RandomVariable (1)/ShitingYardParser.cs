@@ -12,7 +12,8 @@ namespace ShuntingYardParser
         Function,
         Parenthesis,
         Operator,
-        WhiteSpace
+        WhiteSpace,
+        RandomVariable,
     };
 
     public struct Token
@@ -62,30 +63,42 @@ namespace ShuntingYardParser
                 return TokenType.Parenthesis;
             if (operators.ContainsKey(Convert.ToString(ch)))
                 return TokenType.Operator;
+            if (ch == 'd')
+                return TokenType.RandomVariable;
 
             throw new Exception("Wrong character");
         }
 
         public IEnumerable<Token> Tokenize(TextReader reader)
         {
-            var token = new StringBuilder();
+            var token = new StringBuilder(4);
 
             int curr;
+            var isRandomVariable = false;
             while ((curr = reader.Read()) != -1)
             {
                 var ch = (char) curr;
                 var currType = DetermineType(ch);
-                if (currType == TokenType.WhiteSpace)
+                if (currType == TokenType.WhiteSpace || currType == TokenType.RandomVariable)
                     continue;
 
                 token.Append(ch);
-
                 var next = reader.Peek();
+                if (next == 'd')
+                {
+                    token.Append((char) next);
+                    isRandomVariable = true;
+                    continue;
+                }
+
                 var nextType = next != -1 ? DetermineType((char) next) : TokenType.WhiteSpace;
                 if (currType != nextType)
                 {
-                    if (next == '(')
-                        yield return new Token(TokenType.Function, token.ToString());
+                    if (isRandomVariable)
+                    {
+                        yield return new Token(TokenType.RandomVariable, token.ToString());
+                        isRandomVariable = false;
+                    }
                     else
                         yield return new Token(currType, token.ToString());
                     token.Clear();
@@ -111,8 +124,10 @@ namespace ShuntingYardParser
                         while (stackOperations.Any() && stackOperations.Peek().Type == TokenType.Operator &&
                                CompareOperators(tok.Value, stackOperations.Peek().Value))
                             MergeNum(stackOperations, stackNums);
-
                         stackOperations.Push(tok);
+                        break;
+                    case TokenType.RandomVariable:
+                        stackNums.Push(GetDiscreteRandomVariable(tok.Value));
                         break;
                     case TokenType.Parenthesis:
                         if (tok.Value == "(")
@@ -145,6 +160,19 @@ namespace ShuntingYardParser
                 yield return tok;
             }*/
             throw new ArgumentException();
+        }
+
+        public double GetDiscreteRandomVariable(string line)
+        {
+            var nums = line
+                .Split("d")
+                .Select(double.Parse)
+                .ToArray();
+            var result = 0;
+            for (var j = 1; j <= nums[1]; j++)
+                result += j;
+
+            return result / nums[1] * nums[0];
         }
 
         private static void MergeNum(Stack<Token> stackOperations, Stack<double> stackNums)

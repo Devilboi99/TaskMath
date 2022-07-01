@@ -1,8 +1,7 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=29c38c92_002D8a78_002D464e_002Db79a_002D730a8a41f422/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="basicMathTestShuntingYardWithoutBracket #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::EE2AF72F-2FEC-485D-92D4-BD2EB86C02AC::net6.0::Tests.basicMathTestShuntingYardWithoutBracket&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::EE2AF72F-2FEC-485D-92D4-BD2EB86C02AC::net6.0::Tests.basicMathTestShuntingYardWithBracket&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::EE2AF72F-2FEC-485D-92D4-BD2EB86C02AC::net6.0::Tests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bc53b993_002D495b_002D4aa9_002D9496_002D5f795dbf3e78/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="basicMathTestShuntingYardWithoutBracket" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
@@ -13,5 +12,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ef086604_002Dc80a_002D4dba_002Db9e0_002D4c5a14fdf405/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="basicMathTestShuntingYardWithoutBracket #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::EE2AF72F-2FEC-485D-92D4-BD2EB86C02AC::net6.0::Tests.basicMathTestShuntingYardWithoutBracket&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::EE2AF72F-2FEC-485D-92D4-BD2EB86C02AC::net6.0::Tests.TokenRandomVariable&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::EE2AF72F-2FEC-485D-92D4-BD2EB86C02AC::net6.0::Tests.basicMathTestShuntingYardWithBracket&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

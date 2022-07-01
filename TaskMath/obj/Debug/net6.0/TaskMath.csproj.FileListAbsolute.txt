@@ -13,3 +13,6 @@ C:\Users\user\RiderProjects\TaskMath\TaskMath\obj\Debug\net6.0\refint\TaskMath.d
 C:\Users\user\RiderProjects\TaskMath\TaskMath\obj\Debug\net6.0\TaskMath.pdb
 C:\Users\user\RiderProjects\TaskMath\TaskMath\obj\Debug\net6.0\TaskMath.genruntimeconfig.cache
 C:\Users\user\RiderProjects\TaskMath\TaskMath\obj\Debug\net6.0\ref\TaskMath.dll
+C:\Users\user\RiderProjects\TaskMath\TaskMath\bin\Debug\net6.0\RandomVariable.dll
+C:\Users\user\RiderProjects\TaskMath\TaskMath\bin\Debug\net6.0\RandomVariable.pdb
+C:\Users\user\RiderProjects\TaskMath\TaskMath\obj\Debug\net6.0\TaskMath.csproj.CopyComplete

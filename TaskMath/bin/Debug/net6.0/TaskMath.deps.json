@@ -7,14 +7,27 @@
   "targets": {
     ".NETCoreApp,Version=v6.0": {
       "TaskMath/1.0.0": {
+        "dependencies": {
+          "RandomVariable": "1.0.0"
+        },
         "runtime": {
           "TaskMath.dll": {}
+        }
+      },
+      "RandomVariable/1.0.0": {
+        "runtime": {
+          "RandomVariable.dll": {}
         }
       }
     }
   },
   "libraries": {
     "TaskMath/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RandomVariable/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

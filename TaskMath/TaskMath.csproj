@@ -7,4 +7,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\RandomVariable (1)\RandomVariable.csproj" />
+    </ItemGroup>
+
 </Project>
