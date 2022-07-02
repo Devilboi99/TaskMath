@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace ShuntingYardParser
@@ -14,6 +15,7 @@ namespace ShuntingYardParser
         Operator,
         WhiteSpace,
         RandomVariable,
+        Dot
     };
 
     public struct Token
@@ -65,6 +67,8 @@ namespace ShuntingYardParser
                 return TokenType.Operator;
             if (ch == 'd')
                 return TokenType.RandomVariable;
+            if (ch == '.')
+                return TokenType.Dot;
 
             throw new Exception("Wrong character");
         }
@@ -75,6 +79,7 @@ namespace ShuntingYardParser
 
             int curr;
             var isRandomVariable = false;
+            var prevNum = false;
             while ((curr = reader.Read()) != -1)
             {
                 var ch = (char) curr;
@@ -82,7 +87,14 @@ namespace ShuntingYardParser
                 if (currType == TokenType.WhiteSpace || currType == TokenType.RandomVariable)
                     continue;
 
+                if (!prevNum && curr == '-')
+                {
+                    prevNum = false;
+                    token.Append(ch);
+                    continue;
+                }
                 token.Append(ch);
+
                 var next = reader.Peek();
                 if (next == 'd')
                 {
@@ -90,8 +102,12 @@ namespace ShuntingYardParser
                     isRandomVariable = true;
                     continue;
                 }
-
+                prevNum = currType == TokenType.Number;
+                
                 var nextType = next != -1 ? DetermineType((char) next) : TokenType.WhiteSpace;
+                if (nextType == TokenType.Dot || currType == TokenType.Dot)
+                    continue;
+
                 if (currType != nextType)
                 {
                     if (isRandomVariable)
@@ -100,7 +116,10 @@ namespace ShuntingYardParser
                         isRandomVariable = false;
                     }
                     else
+                    {
                         yield return new Token(currType, token.ToString());
+                    }
+
                     token.Clear();
                 }
             }
@@ -147,7 +166,6 @@ namespace ShuntingYardParser
                 }
             }
 
-            var answer = 0.0d;
             while (stackOperations.Count != 0)
                 MergeNum(stackOperations, stackNums);
 
@@ -168,7 +186,7 @@ namespace ShuntingYardParser
                 .Split("d")
                 .Select(double.Parse)
                 .ToArray();
-            var result = 0;
+            var result = 0d;
             for (var j = 1; j <= nums[1]; j++)
                 result += j;
 
