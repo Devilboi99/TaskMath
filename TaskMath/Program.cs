@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using RandomVariable;
-using ShuntingYardParser;
+using ShutingYardParser;
 
 public class Program
 {

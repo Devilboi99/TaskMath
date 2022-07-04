@@ -3,36 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using RandomVariable;
-using ShuntingYardParser;
+using ShutingYardParser;
 
 public class Tests
 {
     private RandomVariableStatisticCalculator RandomMath = new RandomVariableStatisticCalculator();
     private Parser _parser = new Parser();
 
-    private Tuple<double, string>[] _expressionsWithoutBrackets = new Tuple<double, string>[]
-    {
-        Tuple.Create(3d, "-2+5"),
-        Tuple.Create(8d, "5+3"),
-        Tuple.Create(4d, "8-4"),
-        Tuple.Create(12d, "6*2"),
-        Tuple.Create(2d, "6/3"),
-        Tuple.Create(610d, "10+20*30"),
-        Tuple.Create(41d, "20* 10/5+1"),
-        Tuple.Create(23.5, "22+1*3/2"),
-    };
-
-    private Tuple<double, string>[] _expressionWithBrackets = new Tuple<double, string>[]
-    {
-        Tuple.Create(8d, "(5+3)"),
-        Tuple.Create(4d, "(8-4)"),
-        Tuple.Create(12d, "(6*2)"),
-        Tuple.Create(2d, "(6/3)"),
-        Tuple.Create(900d, "(10+20)*30"),
-        Tuple.Create(33.33d, "20*10/(5+1)"),
-        Tuple.Create(34.5, "(22+1)*(3/2)"),
-        Tuple.Create(24d, "(3+2+(4+3)*1)*2")
-    };
 
     private Tuple<double, string>[] _expressionWithRandomVar = new Tuple<double, string>[]
     {
@@ -49,19 +26,30 @@ public class Tests
     {
     }
 
-    [Test]
-    public void BasicMathTestShuntingYardWithoutBracket()
-    {
-        foreach (var expression in _expressionsWithoutBrackets)
-            Assert.AreEqual(expression.Item1, ShutingYardAlgoritm(expression.Item2));
-    }
+    [TestCase(3d, "-2+5")]
+    [TestCase(8d, "5+3")]
+    [TestCase(4d, "8-4")]
+    [TestCase(12d, "6*2")]
+    [TestCase(2d, "6/3")]
+    [TestCase(610d, "10+20*30")]
+    [TestCase(41d, "20* 10/5+1")]
+    [TestCase(23.5, "22+1*3/2")]
+    public void BasicMathTestShuntingYardWithoutBracket(double num, string expression)
+        => Assert.AreEqual(num, ShutingYardAlgoritm(expression));
 
-    [Test]
-    public void BasicMathTestShuntingYardWithBracket()
-    {
-        foreach (var expression in _expressionWithBrackets)
-            Assert.AreEqual(expression.Item1, ShutingYardAlgoritm(expression.Item2), 5e-1);
-    }
+
+    [TestCase(8d, "(5+3)")]
+    [TestCase(4d, "(8-4)")]
+    [TestCase(12d, "(6*2)")]
+    [TestCase(2d, "(6/3)")]
+    [TestCase(900d, "(10+20)*30")]
+    [TestCase(33.33d, "20*10/(5+1)")]
+    [TestCase(4,"(4)")]
+    [TestCase(34.5, "(22+1)*(3/2)")]
+    [TestCase(24d, "(3+2+(4+3)*1)*2")]
+    public void BasicMathTestShuntingYardWithBracket(double num, string expression)
+        => Assert.AreEqual(num, ShutingYardAlgoritm(expression), 5e-1);
+
 
     [Test]
     public void ExpressionWithRandomVariable()
@@ -76,8 +64,7 @@ public class Tests
         {
             var parser = new Parser();
             var tokens = parser.Tokenize(reader).ToList();
-            //Console.WriteLine(string.Join("\n", tokens));
-
+            
             return parser.ShuntingYard(tokens);
         }
     }
@@ -87,12 +74,12 @@ public class Tests
     {
         var randomVar = "1d20";
         var varWithDot = "3.1";
-        using (var reader = new StringReader(varWithDot))
+        using (var reader = new StringReader(randomVar))
         {
             var parser = new Parser();
             var tokens = parser.Tokenize(reader).ToList();
 
-            Assert.AreEqual(new Token(TokenType.Number, "3.1"), tokens.First());
+            Assert.AreEqual(new Token(TokenType.RandomVariable, "1d20"), tokens.First());
         }
     }
 
@@ -101,8 +88,11 @@ public class Tests
     {
         Assert.AreEqual(new RandomVariableStatistic() {ExpectedValue = 6}.ExpectedValue,
             RandomMath.CalculateStatistic("2+2*2", StatisticKind.ExpectedValue).ExpectedValue);
-        Assert.AreEqual(new RandomVariableStatistic() {ExpectedValue = 10.5}.ExpectedValue, RandomMath.CalculateStatistic("1d20", StatisticKind.ExpectedValue).ExpectedValue);
-        Assert.AreEqual(new RandomVariableStatistic() {ExpectedValue = 5.7}.ExpectedValue, RandomMath.CalculateStatistic("2d6+(-1d12/5)", StatisticKind.ExpectedValue).ExpectedValue);
-        Assert.AreEqual(new RandomVariableStatistic() {ExpectedValue = 6}.ExpectedValue, RandomMath.CalculateStatistic("2+2*2", StatisticKind.ExpectedValue).ExpectedValue);
+        Assert.AreEqual(new RandomVariableStatistic() {ExpectedValue = 10.5}.ExpectedValue,
+            RandomMath.CalculateStatistic("1d20", StatisticKind.ExpectedValue).ExpectedValue);
+        Assert.AreEqual(new RandomVariableStatistic() {ExpectedValue = 5.7}.ExpectedValue,
+            RandomMath.CalculateStatistic("2d6+(-1d12/5)", StatisticKind.ExpectedValue).ExpectedValue);
+        Assert.AreEqual(new RandomVariableStatistic() {ExpectedValue = 6}.ExpectedValue,
+            RandomMath.CalculateStatistic("2+2*2", StatisticKind.ExpectedValue).ExpectedValue);
     }
 }

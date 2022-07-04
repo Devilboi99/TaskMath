@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
+using RandomVariable;
 
-namespace ShuntingYardParser
+namespace ShutingYardParser
 {
     public enum TokenType
     {
         Number,
-        Function,
         Parenthesis,
         Operator,
         WhiteSpace,
@@ -40,6 +39,8 @@ namespace ShuntingYardParser
 
     public class Parser
     {
+        private readonly MathAction _mathAction = new MathAction();
+        
         private IDictionary<string, Operator> operators = new Dictionary<string, Operator>
         {
             ["+"] = new Operator {Name = "+", Precedence = 1},
@@ -49,9 +50,7 @@ namespace ShuntingYardParser
         };
 
         private bool CompareOperators(Operator op1, Operator op2)
-        {
-            return op1.Precedence <= op2.Precedence;
-        }
+        => op1.Precedence <= op2.Precedence;
 
         private bool CompareOperators(string op1, string op2) => CompareOperators(operators[op1], operators[op2]);
 
@@ -70,12 +69,12 @@ namespace ShuntingYardParser
             if (ch == '.')
                 return TokenType.Dot;
 
-            throw new Exception("Wrong character");
+            throw new Exception("Wrong character: " + ch);
         }
 
         public IEnumerable<Token> Tokenize(TextReader reader)
         {
-            var token = new StringBuilder(4);
+            var token = new StringBuilder();
 
             int curr;
             var isRandomVariable = false;
@@ -84,31 +83,22 @@ namespace ShuntingYardParser
             {
                 var ch = (char) curr;
                 var currType = DetermineType(ch);
-                if (currType == TokenType.WhiteSpace || currType == TokenType.RandomVariable)
+                if (currType == TokenType.WhiteSpace)
                     continue;
-
-                if (!prevNum && curr == '-')
-                {
-                    prevNum = false;
-                    token.Append(ch);
-                    continue;
-                }
+                
                 token.Append(ch);
 
-                var next = reader.Peek();
-                if (next == 'd')
-                {
-                    token.Append((char) next);
+                if (!prevNum && curr == '-')
+                    continue;
+                if (curr == 'd')
                     isRandomVariable = true;
-                    continue;
-                }
-                prevNum = currType == TokenType.Number;
                 
+                
+                var next = reader.Peek();
+                prevNum = currType == TokenType.Number;
                 var nextType = next != -1 ? DetermineType((char) next) : TokenType.WhiteSpace;
-                if (nextType == TokenType.Dot || currType == TokenType.Dot)
-                    continue;
-
-                if (currType != nextType)
+                
+                if (currType != nextType && IsElementNotPartNum(currType, nextType))
                 {
                     if (isRandomVariable)
                     {
@@ -125,7 +115,11 @@ namespace ShuntingYardParser
             }
         }
 
-        public double ShuntingYard(IEnumerable<Token> tokens)
+        private bool IsElementNotPartNum(TokenType currType, TokenType nextType)
+            => nextType != TokenType.Dot && currType != TokenType.Dot && currType != TokenType.RandomVariable &&
+               TokenType.RandomVariable != nextType;
+
+            public double ShuntingYard(IEnumerable<Token> tokens)
         {
             var stackOperations = new Stack<Token>();
             var stackNums = new Stack<double>();
@@ -135,9 +129,6 @@ namespace ShuntingYardParser
                 {
                     case TokenType.Number:
                         stackNums.Push(double.Parse(tok.Value));
-                        break;
-                    case TokenType.Function:
-                        stackOperations.Push(tok);
                         break;
                     case TokenType.Operator:
                         while (stackOperations.Any() && stackOperations.Peek().Type == TokenType.Operator &&
@@ -156,7 +147,7 @@ namespace ShuntingYardParser
                             while (stackOperations.Peek().Value != "(")
                                 MergeNum(stackOperations, stackNums);
                             stackOperations.Pop();
-                            if (stackOperations.Count != 0 && stackOperations.Peek().Type == TokenType.Function)
+                            if (stackOperations.Count != 0)
                                 MergeNum(stackOperations, stackNums);
                         }
 
@@ -165,19 +156,10 @@ namespace ShuntingYardParser
                         throw new Exception("Wrong token");
                 }
             }
-
             while (stackOperations.Count != 0)
                 MergeNum(stackOperations, stackNums);
 
             return stackNums.Pop();
-            /*while (stackOperations.Any())
-            {
-                var tok = stackOperations.Pop();
-                if (tok.Type == TokenType.Parenthesis)
-                    throw new Exception("Mismatched parentheses");
-                yield return tok;
-            }*/
-            throw new ArgumentException();
         }
 
         public double GetDiscreteRandomVariable(string line)
@@ -193,43 +175,11 @@ namespace ShuntingYardParser
             return result / nums[1] * nums[0];
         }
 
-        private static void MergeNum(Stack<Token> stackOperations, Stack<double> stackNums)
+        private void MergeNum(Stack<Token> stackOperations, Stack<double> stackNums)
         {
             var operation = stackOperations.Pop().Value;
-            var mergeNum = 0d;
-            if (operation == "+")
-                mergeNum = stackNums.Pop() + stackNums.Pop();
-            else if (operation == "-")
-            {
-                var firstNum = stackNums.Pop();
-                mergeNum = stackNums.Pop() - firstNum;
-            }
-            else if (operation == "*")
-                mergeNum = stackNums.Pop() * stackNums.Pop();
-            else if (operation == "/")
-            {
-                var firstNum = stackNums.Pop();
-                mergeNum = stackNums.Pop() / firstNum;
-            }
-
-            stackNums.Push(mergeNum);
-        }
-    }
-
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var text = Console.ReadLine();
-            using (var reader = new StringReader(text))
-            {
-                var parser = new Parser();
-                var tokens = parser.Tokenize(reader).ToList();
-                //Console.WriteLine(string.Join("\n", tokens));
-
-                var rpn = parser.ShuntingYard(tokens);
-                Console.WriteLine(rpn);
-            }
+            var lastNums = (stackNums.Pop(),stackNums.Pop());
+            stackNums.Push(_mathAction[operation, lastNums]);
         }
     }
 }

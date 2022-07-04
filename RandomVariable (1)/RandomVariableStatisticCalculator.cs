@@ -1,14 +1,11 @@
-using System;
 using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using ShuntingYardParser;
+using ShutingYardParser;
 
 namespace RandomVariable
 {
     public class RandomVariableStatisticCalculator : IRandomVariableStatisticCalculator
     {
-        private Parser _parser;
+        private readonly Parser _parser;
 
         public RandomVariableStatisticCalculator()
         {
@@ -18,29 +15,26 @@ namespace RandomVariable
         public RandomVariableStatistic CalculateStatistic(string expression,
             params StatisticKind[] statisticForCalculate)
         {
-            var RandomVarStatistic = new RandomVariableStatistic();
+            var randomVarStatistic = new RandomVariableStatistic();
             foreach (var statisticKind in statisticForCalculate)
             {
                 switch (statisticKind)
                 {
                     case StatisticKind.ExpectedValue:
-                        RandomVarStatistic.ExpectedValue = ShutingYardAlgoritm(expression);
+                        randomVarStatistic.ExpectedValue = ShutingYardAlgoritm(expression);
                         break;
                 }
             }
 
-            return RandomVarStatistic;
+            return randomVarStatistic;
         }
 
-        private static double ShutingYardAlgoritm(string str)
+        private double ShutingYardAlgoritm(string str)
         {
-            using (var reader = new StringReader(str))
-            {
-                var parser = new Parser();
-                var tokens = parser.Tokenize(reader).ToList();
+            using var reader = new StringReader(str);
+            var tokens = _parser.Tokenize(reader);
 
-                return parser.ShuntingYard(tokens);
-            }
+            return _parser.ShuntingYard(tokens);
         }
     }
 }
